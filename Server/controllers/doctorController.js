@@ -2,71 +2,71 @@ const appointmentModel = require('../models/appointmentModel');
 const doctorModel = require('../models/doctorModel');
 const userModel = require('../models/userModel');
 
-// Mengambil jadwal janji temu khusus untuk dokter ini
+// Fetch appointment schedules for this doctor
 const doctorAppointmentsController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOne({ userId: req.body.userId });
         const appointments = await appointmentModel.find({ doctorInfo: doctor._id }).populate('userInfo');
-        res.status(200).send({ success: true, message: 'Jadwal berhasil diambil', data: appointments });
+        res.status(200).send({ success: true, message: 'Schedule retrieved successfully', data: appointments });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, message: 'Gagal mengambil jadwal', error });
+        res.status(500).send({ success: false, message: 'Failed to fetch schedule', error });
     }
 };
 
-// Mengubah status janji temu (Terima/Tolak)
+// Update appointment status (Accept/Reject)
 const updateStatusController = async (req, res) => {
     try {
         const { appointmentsId, status } = req.body;
         const appointments = await appointmentModel.findByIdAndUpdate(appointmentsId, { status });
         
-        // Kirim notifikasi ke pasien
+        // Send a notification to the patient
         const user = await userModel.findOne({ _id: appointments.userInfo });
         user.notification.push({
             type: 'status-updated',
-            message: `Permintaan janji temu Anda telah di-${status === 'approved' ? 'Setujui' : 'Tolak'}`,
+            message: `Your appointment request has been ${status === 'approved' ? 'approved' : 'rejected'}`,
             onClickPath: '/appointments'
         });
         await user.save();
         
-        res.status(200).send({ success: true, message: 'Status janji temu berhasil diperbarui' });
+        res.status(200).send({ success: true, message: 'Appointment status updated successfully' });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, message: 'Gagal update status', error });
+        res.status(500).send({ success: false, message: 'Failed to update status', error });
     }
 };
 
-// Mengambil data profil dokter untuk ditampilkan di form
+// Fetch doctor profile data for the form
 const getDoctorInfoController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOne({ userId: req.body.userId });
         res.status(200).send({
             success: true,
-            message: 'Data profil berhasil diambil',
+            message: 'Profile data retrieved successfully',
             data: doctor,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, message: 'Gagal mengambil data profil', error });
+        res.status(500).send({ success: false, message: 'Failed to fetch profile data', error });
     }
 };
 
-// Menyimpan perubahan profil dokter
+// Save doctor profile changes
 const updateProfileController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOneAndUpdate(
             { userId: req.body.userId },
             req.body,
-            { new: true } // Mengembalikan data terbaru setelah diupdate
+            { new: true } // Return the latest data after update
         );
         res.status(200).send({
             success: true,
-            message: 'Profil Dokter Berhasil Diperbarui',
+            message: 'Doctor profile updated successfully',
             data: doctor,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, message: 'Gagal memperbarui profil', error });
+        res.status(500).send({ success: false, message: 'Failed to update profile', error });
     }
 };
 

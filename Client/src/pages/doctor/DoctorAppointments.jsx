@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import axios from 'axios';
+import { useNotification } from '../../components/NotificationProvider';
 
 const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const { success, error: notifyError } = useNotification();
 
   const getAppointments = async () => {
     try {
@@ -26,12 +28,12 @@ const DoctorAppointments = () => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       if (res.data.success) {
-        alert(res.data.message);
-        getAppointments(); // Segarkan tabel
+        success(res.data.message);
+        getAppointments();
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan sistem');
+    } catch (err) {
+      console.log(err);
+      notifyError('A system error occurred');
     }
   };
 
@@ -44,45 +46,43 @@ const DoctorAppointments = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Dokter</div>
-            <h3 className="page-title">Jadwal Pasien Saya</h3>
-            <p className="page-subtitle">Tinjau antrean konsultasi pasien dan tanggapi permintaan yang masih menunggu persetujuan.</p>
+            <div className="page-eyebrow">Doctor</div>
+            <h3 className="page-title">My Patient Schedule</h3>
+            <p className="page-subtitle">Review the patient consultation queue and respond to requests that are still pending approval.</p>
           </div>
         </div>
       <div className="card surface-card p-3">
-        {/* Tambahkan div pembungkus table-responsive di sini */}
         <div className="table-responsive">
           <table className="table table-hover" style={{ minWidth: '900px' }}>
             <thead>
               <tr>
-                <th>ID Pemesanan</th>
-                <th>Nama Pasien</th>
-                <th>No. HP Pasien</th> 
-                <th>Tanggal & Waktu</th>
+                <th>Booking ID</th>
+                <th>Patient Name</th>
+                <th>Patient Phone</th> 
+                <th>Date & Time</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {appointments.map((appt, index) => (
                 <tr key={index}>
                   <td>{appt._id}</td>
-                  <td>{appt.userInfo?.name || 'Data Hilang'}</td>
+                  <td>{appt.userInfo?.name || 'Missing data'}</td>
                   
-                  {/* <-- Menampilkan No. HP Pasien --> */}
-                  <td>{appt.userInfo?.phone || <span className="text-muted fst-italic">Belum diisi</span>}</td> 
+                  <td>{appt.userInfo?.phone || <span className="text-muted fst-italic">Not provided</span>}</td> 
                   
                   <td>{appt.date} | {appt.time}</td>
                   <td>
                     <span className={`badge ${appt.status === 'pending' ? 'bg-warning text-dark' : appt.status === 'approved' ? 'bg-success' : 'bg-danger'}`}>
-                      {appt.status}
+                      {appt.status === 'pending' ? 'Pending' : appt.status === 'approved' ? 'Approved' : 'Rejected'}
                     </span>
                   </td>
                   <td>
                     {appt.status === 'pending' && (
                       <div className="d-flex gap-2">
-                        <button className="btn btn-success btn-sm" onClick={() => handleStatus(appt, 'approved')}>Terima</button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleStatus(appt, 'rejected')}>Tolak</button>
+                        <button className="btn btn-success btn-sm" onClick={() => handleStatus(appt, 'approved')}>Accept</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleStatus(appt, 'rejected')}>Reject</button>
                       </div>
                     )}
                   </td>

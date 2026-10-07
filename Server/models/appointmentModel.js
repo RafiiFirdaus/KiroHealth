@@ -6,7 +6,7 @@ const appointmentSchema = new mongoose.Schema({
     date: { type: String, required: true },
     time: { type: String, required: true },
     status: { type: String, default: 'pending' },
-    document: { type: String } // Untuk menyimpan link/path dokumen rekam medis
+    document: { type: String } // Store the medical record document link/path
 }, {
     timestamps: true
 });

@@ -14,27 +14,23 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
 
-  // Menu untuk Pasien
   const userMenu = [
-    { name: 'Beranda', path: '/', icon: <FaHome size={20} /> },
-    { name: 'Riwayat Janji', path: '/appointments', icon: <FaList size={20} /> },
-    { name: 'Daftar Jadi Dokter', path: '/apply-doctor', icon: <FaUserMd size={20} /> },
-    { name: 'Profil', path: '/profile', icon: <FaUser size={20} /> },
+    { name: 'Home', path: '/', icon: <FaHome size={20} /> },
+    { name: 'Appointment History', path: '/appointments', icon: <FaList size={20} /> },
+    { name: 'Apply as Doctor', path: '/apply-doctor', icon: <FaUserMd size={20} /> },
+    { name: 'Profile', path: '/profile', icon: <FaUser size={20} /> },
   ];
 
-  // Menu untuk Admin
   const adminMenu = [
-    { name: 'Kelola Dokter', path: '/admin/doctors', icon: <FaUserMd size={20} /> },
-    { name: 'Kelola Pengguna', path: '/admin/users', icon: <FaUser size={20} /> },
+    { name: 'Manage Doctors', path: '/admin/doctors', icon: <FaUserMd size={20} /> },
+    { name: 'Manage Users', path: '/admin/users', icon: <FaUser size={20} /> },
   ];
 
-  // Menu untuk Dokter
   const doctorMenu = [
-    { name: 'Jadwal Pasien', path: '/doctor/appointments', icon: <FaList size={20} /> },
-    { name: 'Profil', path: `/doctor/profile/${user?._id}`, icon: <FaUser size={20} /> },
+    { name: 'Patient Schedule', path: '/doctor/appointments', icon: <FaList size={20} /> },
+    { name: 'Profile', path: `/doctor/profile/${user?._id}`, icon: <FaUser size={20} /> },
   ];
 
-  // Penentu Menu Berdasarkan Role (Prioritas: Admin -> Dokter -> Pasien)
   const SidebarMenu = user?.type === 'admin' 
     ? adminMenu 
     : user?.isdoctor 
@@ -43,8 +39,8 @@ const Layout = ({ children }) => {
 
 
   const handleLogout = () => {
-    localStorage.clear(); // Hapus token
-    dispatch(setUser(null)); // KOSONGKAN BRANKAS REDUX!
+    localStorage.clear();
+    dispatch(setUser(null));
     navigate('/login');
   };
 
@@ -76,7 +72,7 @@ const Layout = ({ children }) => {
           })}
           <div className="menu-item" onClick={handleLogout} style={{ cursor: 'pointer' }}>
             <BiLogOut size={20} />
-            <span style={{ marginLeft: '15px', fontSize: '1.1rem' }}>Logout</span>
+            <span style={{ marginLeft: '15px', fontSize: '1.1rem' }}>Sign Out</span>
           </div>
         </div>
       </div>
@@ -96,7 +92,7 @@ const Layout = ({ children }) => {
               to={user?.isdoctor ? `/doctor/profile/${user._id}` : "/profile"} 
               className="fw-bold text-decoration-none"
             >
-              {user ? user.name : 'Memuat...'}
+              {user ? user.name : 'Loading...'}
             </Link>
           </div>
         </div>

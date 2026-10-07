@@ -4,25 +4,25 @@ const appointmentModel = require('../models/appointmentModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Controller Registrasi
+// Registration controller
 const registerController = async (req, res) => {
     try {
-        // Cek apakah email sudah ada di database
+        // Check whether the email already exists in the database
         const existingUser = await userModel.findOne({ email: req.body.email });
         if (existingUser) {
-            return res.status(200).send({ message: 'Email sudah terdaftar', success: false });
+            return res.status(200).send({ message: 'Email is already registered', success: false });
         }
 
-        // Hash password menggunakan bcrypt
+        // Hash the password using bcrypt
         const password = req.body.password;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         req.body.password = hashedPassword;
 
-        // Simpan user baru
+        // Save the new user
         const newUser = new userModel(req.body);
         await newUser.save();
-        res.status(201).send({ message: 'Registrasi Berhasil', success: true });
+        res.status(201).send({ message: 'Registration successful', success: true });
 
     } catch (error) {
         console.log(error);
@@ -30,24 +30,24 @@ const registerController = async (req, res) => {
     }
 };
 
-// Controller Login
+// Login controller
 const loginController = async (req, res) => {
     try {
-        // Cek apakah user ada di database
+        // Check whether the user exists in the database
         const user = await userModel.findOne({ email: req.body.email });
         if (!user) {
-            return res.status(200).send({ message: 'Pengguna tidak ditemukan', success: false });
+            return res.status(200).send({ message: 'User not found', success: false });
         }
 
-        // Cocokkan password
+        // Compare passwords
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         if (!isMatch) {
-            return res.status(200).send({ message: 'Email atau Password salah', success: false });
+            return res.status(200).send({ message: 'Invalid email or password', success: false });
         }
 
-        // Generate Token JWT (berlaku 1 hari)
+        // Generate JWT token (valid for 1 day)
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        res.status(200).send({ message: 'Login Berhasil', success: true, token });
+        res.status(200).send({ message: 'Login successful', success: true, token });
 
     } catch (error) {
         console.log(error);
@@ -55,14 +55,14 @@ const loginController = async (req, res) => {
     }
 };
 
-// Controller untuk mengambil data user yang sedang login
+// Controller for fetching the currently logged-in user
 const authController = async (req, res) => {
     try {
         const user = await userModel.findOne({ _id: req.body.userId });
         if (!user) {
-            return res.status(200).send({ message: 'Pengguna tidak ditemukan', success: false });
+            return res.status(200).send({ message: 'User not found', success: false });
         } else {
-            // Sembunyikan password sebelum dikirim sebagai respon
+            // Hide the password before sending the response
             user.password = undefined; 
             res.status(200).send({
                 success: true,
@@ -80,67 +80,67 @@ const applyDoctorController = async (req, res) => {
         const newDoctor = await doctorModel({ ...req.body, status: 'pending' });
         await newDoctor.save();
         
-        // --- LOGIKA NOTIFIKASI BARU ---
-        // Cari pengguna yang memiliki role admin
+        // --- NEW NOTIFICATION LOGIC ---
+        // Find the user with the admin role
         const adminUser = await userModel.findOne({ type: 'admin' });
         
         if (adminUser) {
             const notification = adminUser.notification;
             notification.push({
                 type: 'apply-doctor-request',
-                message: `${newDoctor.fullname} telah mengajukan diri sebagai dokter.`,
+                message: `${newDoctor.fullname} has applied to become a doctor.`,
                 data: {
                     doctorId: newDoctor._id,
                     name: newDoctor.fullname,
                     onClickPath: '/admin/doctors'
                 }
             });
-            // Update data admin dengan notifikasi baru
+            // Update the admin data with the new notification
             await userModel.findByIdAndUpdate(adminUser._id, { notification });
         }
         // ------------------------------
         
         res.status(201).send({
             success: true,
-            message: 'Pengajuan akun dokter berhasil dikirim dan menunggu persetujuan admin',
+            message: 'Doctor account application submitted and awaiting admin approval',
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, error, message: 'Error saat memproses pengajuan dokter' });
+        res.status(500).send({ success: false, error, message: 'Error while processing doctor application' });
     }
 };
 
-// Controller untuk menandai semua notifikasi telah dibaca
+// Controller for marking all notifications as read
 const markAllNotificationController = async (req, res) => {
     try {
         const user = await userModel.findOne({ _id: req.body.userId });
         const unreadNotifications = user.notification;
         
-        // Pindahkan notifikasi yang belum dibaca ke array seen_notification (jika kita ingin menyimpannya)
-        // Untuk saat ini, kita akan mengosongkan notifikasi aktif saja agar sederhana
+        // Move unread notifications to a seen_notification array if we want to preserve them
+        // For now, clear the active notifications to keep it simple
         user.notification = []; 
         
         const updatedUser = await user.save();
-        updatedUser.password = undefined; // Sembunyikan password
+        updatedUser.password = undefined; // Hide the password
 
         res.status(200).send({
             success: true,
-            message: 'Semua notifikasi telah ditandai dibaca',
+            message: 'All notifications have been marked as read',
             data: updatedUser,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: 'Error saat membaca notifikasi', success: false, error });
+        res.status(500).send({ message: 'Error while reading notifications', success: false, error });
     }
 };
 
-// Mengambil semua dokter yang statusnya "approved"
+// Fetch all doctors with approved status
 const getAllApprovedDoctorsController = async (req, res) => {
     try {
         const doctors = await doctorModel.find({ status: 'approved' });
         res.status(200).send({
             success: true,
-            message: 'Daftar dokter berhasil diambil',
+            message: 'Doctor list retrieved successfully',
             data: doctors,
         });
     } catch (error) {
@@ -148,60 +148,60 @@ const getAllApprovedDoctorsController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: 'Error saat mengambil data dokter',
+            message: 'Error while fetching doctor data',
         });
     }
 };
 
-// Mengambil detail satu dokter berdasarkan ID
+// Fetch a single doctor by ID
 const getDoctorByIdController = async (req, res) => {
     try {
         const doctor = await doctorModel.findOne({ _id: req.body.doctorId });
-        res.status(200).send({ success: true, message: 'Data dokter berhasil diambil', data: doctor });
+        res.status(200).send({ success: true, message: 'Doctor data retrieved successfully', data: doctor });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, error, message: 'Gagal mengambil data dokter' });
+        res.status(500).send({ success: false, error, message: 'Failed to fetch doctor data' });
     }
 };
 
-// Menyimpan jadwal pemesanan dan mengirim notifikasi ke dokter
+// Save the appointment request and send a notification to the doctor
 const bookAppointmentController = async (req, res) => {
     try {
-        // Simpan data pemesanan ke database
+        // Save the appointment data to the database
         const newAppointment = new appointmentModel({
-            userInfo: req.body.userId, // ID Pasien (dari middleware)
-            doctorInfo: req.body.doctorId, // ID Dokter (dari frontend)
+            userInfo: req.body.userId, // Patient ID (from middleware)
+            doctorInfo: req.body.doctorId, // Doctor ID (from frontend)
             date: req.body.date,
             time: req.body.time,
             status: 'pending'
         });
         await newAppointment.save();
 
-        // Cari data akun utama milik dokter tersebut untuk dikirimi notifikasi
+        // Find the doctor's main account to send the notification
         const doctor = await doctorModel.findOne({ _id: req.body.doctorId });
         const user = await userModel.findOne({ _id: doctor.userId });
         
         user.notification.push({
             type: 'New-appointment-request',
-            message: `Ada permintaan janji temu baru pada ${req.body.date} jam ${req.body.time}`,
+            message: `There is a new appointment request on ${req.body.date} at ${req.body.time}`,
             onClickPath: '/doctor/appointments'
         });
         await user.save();
 
-        res.status(200).send({ success: true, message: 'Janji temu berhasil diajukan!' });
+        res.status(200).send({ success: true, message: 'Appointment request submitted successfully!' });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ success: false, error, message: 'Gagal membuat janji temu' });
+        res.status(500).send({ success: false, error, message: 'Failed to create appointment' });
     }
 };
 
-// Mengambil daftar janji temu khusus untuk user (pasien) yang sedang login
+// Fetch appointments for the currently logged-in user (patient)
 const userAppointmentsController = async (req, res) => {
     try {
         const appointments = await appointmentModel.find({ userInfo: req.body.userId }).populate('doctorInfo');
         res.status(200).send({
             success: true,
-            message: 'Riwayat janji temu berhasil diambil',
+            message: 'Appointment history retrieved successfully',
             data: appointments
         });
     } catch (error) {
@@ -209,27 +209,27 @@ const userAppointmentsController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: 'Gagal mengambil riwayat janji temu'
+            message: 'Failed to fetch appointment history'
         });
     }
 };
 
-// Memperbarui profil pengguna (Pasien/Admin)
+// Update the user profile (Patient/Admin)
 const updateUserProfileController = async (req, res) => {
     try {
-        // Menggunakan findByIdAndUpdate untuk memperbarui data
+        // Use findByIdAndUpdate to update the data
         const updatedUser = await userModel.findByIdAndUpdate(
             req.body.userId,
             { name: req.body.name, email: req.body.email, phone: req.body.phone },
             { new: true }
         );
         
-        // Hapus password dari respons demi keamanan
+        // Remove the password from the response for security
         updatedUser.password = undefined;
 
         res.status(200).send({
             success: true,
-            message: 'Profil berhasil diperbarui',
+            message: 'Profile updated successfully',
             data: updatedUser
         });
     } catch (error) {
@@ -237,17 +237,17 @@ const updateUserProfileController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: 'Gagal memperbarui profil pengguna'
+            message: 'Failed to update user profile'
         });
     }
 };
 
-// Mengecek ketersediaan jadwal dokter pada tanggal dan jam tertentu
+// Check doctor schedule availability for a specific date and time
 const checkAvailabilityController = async (req, res) => {
     try {
         const { date, time, doctorId } = req.body;
 
-        // Cari apakah ada jadwal dengan dokter, tanggal, dan jam yang sama persis
+        // Check whether an appointment already exists for the same doctor, date, and time
         const appointments = await appointmentModel.find({
             doctorInfo: doctorId,
             date: date,
@@ -256,13 +256,13 @@ const checkAvailabilityController = async (req, res) => {
 
         if (appointments.length > 0) {
             return res.status(200).send({
-                message: 'Jadwal tidak tersedia, dokter sudah ada janji pada waktu tersebut',
+                message: 'Schedule is unavailable. The doctor already has an appointment at that time.',
                 success: false,
             });
         } else {
             return res.status(200).send({
                 success: true,
-                message: 'Jadwal tersedia! Silakan lanjutkan pemesanan.',
+                message: 'Schedule is available. Please continue with the booking.',
             });
         }
     } catch (error) {
@@ -270,7 +270,7 @@ const checkAvailabilityController = async (req, res) => {
         res.status(500).send({
             success: false,
             error,
-            message: 'Error saat mengecek ketersediaan jadwal'
+            message: 'Error while checking schedule availability'
         });
     }
 };

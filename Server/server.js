@@ -11,16 +11,16 @@ app.use('/api/users', require('./routes/userRoute'));
 app.use('/api/admin', require('./routes/adminRoute'));
 app.use('/api/doctor', require('./routes/doctorRoute'));
 
-// Eksekusi Koneksi ke MongoDB
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Berhasil terhubung ke MongoDB'))
-  .catch((err) => console.log('Gagal terhubung ke MongoDB:', err));
+  .then(() => console.log('Successfully connected to MongoDB'))
+  .catch((err) => console.log('Failed to connect to MongoDB:', err));
 
 app.get('/', (req, res) => {
-    res.send('Server Backend KiroHealth Berjalan!');
+    res.send('KiroHealth backend server is running!');
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

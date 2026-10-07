@@ -34,14 +34,14 @@ const Home = () => {
         <div className="page-stack">
           <div className="page-header">
             <div>
-              <div className="page-eyebrow">Dasbor Admin</div>
-              <h3 className="page-title">Dasbor Administrator</h3>
-              <p className="page-subtitle">Pusat kendali KiroHealth untuk memantau pendaftaran dokter, pengguna, dan aktivitas layanan.</p>
+              <div className="page-eyebrow">Admin Dashboard</div>
+              <h3 className="page-title">Administrator Dashboard</h3>
+              <p className="page-subtitle">KiroHealth control center for monitoring doctor registrations, users, and service activity.</p>
             </div>
           </div>
           <div className="alert alert-info">
-            <h4 className="alert-heading">Selamat datang, Admin!</h4>
-            <p>Anda berada di pusat kendali aplikasi KiroHealth. Silakan gunakan menu di sebelah kiri untuk memvalidasi pendaftaran dokter baru atau mengelola pengguna yang ada.</p>
+            <h4 className="alert-heading">Welcome, Admin!</h4>
+            <p>You are in the KiroHealth control center. Use the left menu to review new doctor registrations or manage existing users.</p>
           </div>
         </div>
       </Layout>
@@ -54,14 +54,14 @@ const Home = () => {
         <div className="page-stack">
           <div className="page-header">
             <div>
-              <div className="page-eyebrow">Dasbor Dokter</div>
-              <h3 className="page-title">Dasbor Dokter</h3>
-              <p className="page-subtitle">Kelola jadwal pasien, respons janji temu, dan data praktik dalam satu ruang kerja yang lebih tenang.</p>
+                <div className="page-eyebrow">Doctor Dashboard</div>
+                <h3 className="page-title">Doctor Dashboard</h3>
+                <p className="page-subtitle">Manage patient schedules, appointment responses, and practice details in one calmer workspace.</p>
             </div>
           </div>
           <div className="alert alert-success">
-            <h4 className="alert-heading">Selamat datang, Dr. {user.name}!</h4>
-            <p>Silakan gunakan menu "Jadwal Pasien" untuk melihat dan merespons permintaan janji temu, atau menu "Profil" untuk memperbarui data praktik Anda.</p>
+              <h4 className="alert-heading">Welcome, Dr. {user.name}!</h4>
+              <p>Use the "Patient Schedule" menu to review appointment requests, or "Profile" to update your practice details.</p>
           </div>
         </div>
       </Layout>
@@ -73,9 +73,9 @@ const Home = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Temukan Dokter</div>
-            <h3 className="page-title">Daftar Dokter Tersedia</h3>
-            <p className="page-subtitle">Pilih dokter yang sesuai kebutuhan Anda dan lanjutkan ke jadwal konsultasi yang tersedia.</p>
+            <div className="page-eyebrow">Find a Doctor</div>
+            <h3 className="page-title">Available Doctors</h3>
+            <p className="page-subtitle">Choose the doctor that fits your needs and continue to the available consultation schedule.</p>
           </div>
         </div>
         <div className="row g-4">
@@ -88,16 +88,16 @@ const Home = () => {
                 <h5 className="mb-0">{doctor.fullname}</h5>
               </div>
               <div className="card-body">
-                <p className="mb-1"><b>Spesialisasi:</b> {doctor.specialization}</p>
-                <p className="mb-1"><b>Pengalaman:</b> {doctor.experience} Tahun</p>
-                <p className="mb-1"><b>Biaya:</b> Rp {doctor.fees}</p>
-                <p className="mb-3"><b>Jam Praktik:</b> {doctor.timings[0]} - {doctor.timings[1]}</p>
+                <p className="mb-1"><b>Specialization:</b> {doctor.specialization}</p>
+                <p className="mb-1"><b>Experience:</b> {doctor.experience} years</p>
+                <p className="mb-1"><b>Fee:</b> Rp {doctor.fees}</p>
+                <p className="mb-3"><b>Working Hours:</b> {doctor.timings[0]} - {doctor.timings[1]}</p>
                 
                 <button 
                   className="btn btn-outline-primary w-100"
                   onClick={() => navigate(`/book-appointment/${doctor._id}`)}
                 >
-                  Buat Janji Temu
+                  Book Appointment
                 </button>
               </div>
             </div>

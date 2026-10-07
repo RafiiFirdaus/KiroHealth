@@ -4,13 +4,13 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// ROUTE GET || AMBIL SEMUA USER
+// ROUTE GET || FETCH ALL USERS
 router.get('/getAllUsers', authMiddleware, getAllUsersController);
 
-// ROUTE GET || AMBIL SEMUA DOKTER
+// ROUTE GET || FETCH ALL DOCTORS
 router.get('/getAllDoctors', authMiddleware, getAllDoctorsController);
 
-// ROUTE POST || UBAH STATUS DOKTER
+// ROUTE POST || CHANGE DOCTOR STATUS
 router.post('/changeAccountStatus', authMiddleware, changeAccountStatusController);
 
 module.exports = router;

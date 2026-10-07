@@ -3,19 +3,19 @@ import Layout from '../components/Layout';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setUser } from '../redux/features/userSlice';
+import { useNotification } from '../components/NotificationProvider';
 
 const UserProfile = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const { success, error: notifyError } = useNotification();
   
-  // State untuk form
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: ''
   });
 
-  // Isi form secara otomatis saat data user dari Redux sudah siap
   useEffect(() => {
     if (user) {
       setFormData({
@@ -43,13 +43,12 @@ const UserProfile = () => {
         }
       );
       if (res.data.success) {
-        alert(res.data.message);
-        // Perbarui data di brankas Redux agar nama di Navbar langsung berubah
-        dispatch(setUser(res.data.data)); 
+        success(res.data.message);
+        dispatch(setUser(res.data.data));
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan saat memperbarui profil');
+    } catch (err) {
+      console.log(err);
+      notifyError('An error occurred while updating the profile');
     }
   };
 
@@ -58,9 +57,9 @@ const UserProfile = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Akun</div>
-            <h3 className="page-title">Profil Saya</h3>
-            <p className="page-subtitle">Perbarui identitas akun Anda agar informasi di seluruh aplikasi tetap konsisten.</p>
+            <div className="page-eyebrow">Account</div>
+            <h3 className="page-title">My Profile</h3>
+            <p className="page-subtitle">Update your account details so information stays consistent across the app.</p>
           </div>
         </div>
       <div className="card surface-card p-4 mx-auto" style={{ maxWidth: '500px' }}>
@@ -71,12 +70,12 @@ const UserProfile = () => {
           >
             {user?.name?.charAt(0).toUpperCase()}
           </div>
-          <h5 className="mb-0">{user?.type === 'admin' ? 'Administrator' : 'Pasien'}</h5>
+          <h5 className="mb-0">{user?.type === 'admin' ? 'Administrator' : 'Patient'}</h5>
         </div>
 
         <form onSubmit={handleUpdate}>
           <div className="mb-3">
-            <label className="fw-bold">Nama Lengkap</label>
+            <label className="fw-bold">Full Name</label>
             <input 
               type="text" 
               name="name" 
@@ -87,19 +86,19 @@ const UserProfile = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="fw-bold">No. Telepon / WhatsApp</label>
+            <label className="fw-bold">Phone / WhatsApp Number</label>
             <input 
               type="text" 
               name="phone" 
               value={formData.phone} 
               onChange={handleChange} 
               className="form-control" 
-              placeholder="Contoh: 08123456789"
+              placeholder="Example: 08123456789"
               required 
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">Simpan Perubahan</button>
+          <button type="submit" className="btn btn-primary w-100">Save Changes</button>
         </form>
       </div>
       </div>

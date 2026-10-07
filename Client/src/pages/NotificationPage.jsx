@@ -4,13 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { setUser } from '../redux/features/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../components/NotificationProvider';
 
 const NotificationPage = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { success, error: notifyError } = useNotification();
 
-  // Fungsi untuk menandai semua notifikasi telah dibaca
   const handleMarkAllRead = async () => {
     try {
       const res = await axios.post(
@@ -23,15 +24,14 @@ const NotificationPage = () => {
         }
       );
       if (res.data.success) {
-        alert(res.data.message);
-        // Perbarui data user di brankas Redux agar badge lonceng hilang
-        dispatch(setUser(res.data.data)); 
+        success(res.data.message);
+        dispatch(setUser(res.data.data));
       } else {
-        alert(res.data.message);
+        notifyError(res.data.message);
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan sistem');
+    } catch (err) {
+      console.log(err);
+      notifyError('A system error occurred');
     }
   };
 
@@ -40,16 +40,16 @@ const NotificationPage = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Aktivitas</div>
-            <h3 className="page-title">Halaman Notifikasi</h3>
-            <p className="page-subtitle">Cek pembaruan terbaru terkait janji temu, persetujuan dokter, dan aktivitas akun Anda.</p>
+            <div className="page-eyebrow">Activity</div>
+            <h3 className="page-title">Notifications</h3>
+            <p className="page-subtitle">Check the latest updates for appointments, doctor approvals, and your account activity.</p>
           </div>
         </div>
       <div className="card surface-card p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5>Notifikasi Belum Dibaca</h5>
+          <h5>Unread Notifications</h5>
           <h6 style={{ cursor: 'pointer', color: 'blue' }} onClick={handleMarkAllRead}>
-            Tandai Semua Dibaca
+            Mark All as Read
           </h6>
         </div>
 
@@ -65,7 +65,7 @@ const NotificationPage = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-muted">Tidak ada notifikasi baru.</p>
+          <p className="text-center text-muted">No new notifications.</p>
         )}
       </div>
       </div>

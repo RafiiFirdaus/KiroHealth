@@ -8,7 +8,6 @@ export default function ProtectedRoute({ children }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
 
-  // Fungsi untuk mengambil data user
   const getUser = async () => {
     try {
       const res = await axios.post(
@@ -21,8 +20,7 @@ export default function ProtectedRoute({ children }) {
         }
       );
       if (res.data.success) {
-        // Simpan data ke brankas Redux
-        dispatch(setUser(res.data.data)); 
+        dispatch(setUser(res.data.data));
       } else {
         localStorage.clear();
       }
@@ -32,7 +30,6 @@ export default function ProtectedRoute({ children }) {
     }
   };
 
-  // Cek apakah data user sudah ada di Redux, jika belum maka panggil fungsi
   useEffect(() => {
     if (!user) {
       getUser();

@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={ <ProtectedRoute><Home /></ProtectedRoute> } />
         
-        {/* Tambahkan Rute Apply Doctor di sini */}
+        {/* Apply Doctor route */}
         <Route path="/apply-doctor" element={ <ProtectedRoute><ApplyDoctor /></ProtectedRoute> } />
         <Route path="/admin/doctors" element={ <ProtectedRoute><Doctors /></ProtectedRoute> } />
         <Route path="/admin/users" element={ <ProtectedRoute><Users /></ProtectedRoute> } />

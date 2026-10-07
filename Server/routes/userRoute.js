@@ -20,28 +20,28 @@ router.post('/register', registerController);
 router.post('/login', loginController);
 router.post('/getUserData', authMiddleware, authController);
 
-// ROUTE POST || APPLY DOCTOR (TERPROTEKSI)
+// ROUTE POST || APPLY DOCTOR (PROTECTED)
 router.post('/apply-doctor', authMiddleware, applyDoctorController);
 
-// ROUTE POST || TANDAI NOTIFIKASI DIBACA
+// ROUTE POST || MARK NOTIFICATIONS AS READ
 router.post('/get-all-notification', authMiddleware, markAllNotificationController);
 
-// ROUTE GET || AMBIL DAFTAR DOKTER DI BERANDA
+// ROUTE GET || FETCH DOCTOR LIST ON THE HOME PAGE
 router.get('/getAllDoctors', authMiddleware, getAllApprovedDoctorsController);
 
-// ROUTE POST || AMBIL DETAIL SATU DOKTER
+// ROUTE POST || FETCH ONE DOCTOR'S DETAILS
 router.post('/getDoctorById', authMiddleware, getDoctorByIdController);
 
-// ROUTE POST || BUAT JANJI TEMU
+// ROUTE POST || CREATE APPOINTMENT
 router.post('/book-appointment', authMiddleware, bookAppointmentController);
 
-// ROUTE GET || AMBIL RIWAYAT JANJI TEMU PASIEN
+// ROUTE GET || FETCH PATIENT APPOINTMENT HISTORY
 router.get('/user-appointments', authMiddleware, userAppointmentsController);
 
-// ROUTE POST || UPDATE PROFIL USER
+// ROUTE POST || UPDATE USER PROFILE
 router.post('/update-profile', authMiddleware, updateUserProfileController);
 
-// ROUTE POST || CEK KETERSEDIAAN JADWAL
+// ROUTE POST || CHECK SCHEDULE AVAILABILITY
 router.post('/check-booking-availability', authMiddleware, checkAvailabilityController);
 
 module.exports = router;

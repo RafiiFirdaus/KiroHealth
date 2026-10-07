@@ -6,9 +6,9 @@ module.exports = async (req, res, next) => {
         
         jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
             if (err) {
-                return res.status(200).send({ message: 'Autentikasi Gagal', success: false });
+                return res.status(200).send({ message: 'Authentication failed', success: false });
             } else {
-                // --- TAMBAHKAN PENGECEKAN INI (BARIS 13-15) ---
+                // --- ADD THIS CHECK (LINES 13-15) ---
                 if (!req.body) {
                     req.body = {}; 
                 }
@@ -19,6 +19,6 @@ module.exports = async (req, res, next) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(401).send({ message: 'Autentikasi Gagal', success: false });
+        res.status(401).send({ message: 'Authentication failed', success: false });
     }
 };

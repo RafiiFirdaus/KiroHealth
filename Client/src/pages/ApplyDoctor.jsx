@@ -3,12 +3,13 @@ import Layout from '../components/Layout';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNotification } from '../components/NotificationProvider';
 
 const ApplyDoctor = () => {
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const { success, error: notifyError } = useNotification();
   
-  // State untuk menampung data formulir
   const [formData, setFormData] = useState({
     fullname: '',
     email: '',
@@ -28,7 +29,6 @@ const ApplyDoctor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Gabungkan jam mulai dan selesai ke dalam format array untuk field 'timings' di database
       const payload = {
         ...formData,
         userId: user._id,
@@ -46,14 +46,14 @@ const ApplyDoctor = () => {
       );
 
       if (res.data.success) {
-        alert(res.data.message);
+        success(res.data.message);
         navigate('/');
       } else {
-        alert(res.data.message);
+        notifyError(res.data.message);
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan sistem');
+    } catch (err) {
+      console.log(err);
+      notifyError('A system error occurred');
     }
   };
 
@@ -62,53 +62,53 @@ const ApplyDoctor = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Pendaftaran Dokter</div>
-            <h3 className="page-title">Formulir Pengajuan Dokter</h3>
-            <p className="page-subtitle">Isi data diri dan informasi praktik untuk mengajukan verifikasi sebagai dokter di KiroHealth.</p>
+            <div className="page-eyebrow">Doctor Registration</div>
+            <h3 className="page-title">Doctor Application Form</h3>
+            <p className="page-subtitle">Fill in your personal and practice details to request verification as a doctor on KiroHealth.</p>
           </div>
         </div>
       <form onSubmit={handleSubmit} className="card surface-card p-4">
-        <h5 className="mb-3 text-primary">Data Pribadi & Profesional</h5>
+        <h5 className="mb-3 text-primary">Personal & Professional Information</h5>
         <div className="row">
           <div className="col-md-4 mb-3">
-            <label>Nama Lengkap (beserta gelar)</label>
+            <label>Full Name (including title)</label>
             <input type="text" name="fullname" value={formData.fullname} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-4 mb-3">
-            <label>Email Profesional</label>
+            <label>Professional Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-4 mb-3">
-            <label>No. Telepon / WhatsApp</label>
+            <label>Phone / WhatsApp Number</label>
             <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-12 mb-3">
-            <label>Alamat Praktik / Klinik</label>
+            <label>Practice / Clinic Address</label>
             <input type="text" name="address" value={formData.address} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-4 mb-3">
-            <label>Spesialisasi</label>
-            <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} className="form-control" placeholder="Contoh: Dokter Gigi" required />
+            <label>Specialization</label>
+            <input type="text" name="specialization" value={formData.specialization} onChange={handleChange} className="form-control" placeholder="Example: Dentist" required />
           </div>
           <div className="col-md-4 mb-3">
-            <label>Pengalaman (Tahun)</label>
+            <label>Experience (Years)</label>
             <input type="text" name="experience" value={formData.experience} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-4 mb-3">
-            <label>Biaya Konsultasi (Rp)</label>
+            <label>Consultation Fee (Rp)</label>
             <input type="number" name="fees" value={formData.fees} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-6 mb-3">
-            <label>Jam Mulai Praktik</label>
+            <label>Practice Start Time</label>
             <input type="time" name="timingStart" value={formData.timingStart} onChange={handleChange} className="form-control" required />
           </div>
           <div className="col-md-6 mb-3">
-            <label>Jam Selesai Praktik</label>
+            <label>Practice End Time</label>
             <input type="time" name="timingEnd" value={formData.timingEnd} onChange={handleChange} className="form-control" required />
           </div>
         </div>
         <div className="d-flex justify-content-end mt-3">
-          <button type="submit" className="btn btn-primary px-4">Kirim Pengajuan</button>
+          <button type="submit" className="btn btn-primary px-4">Submit Application</button>
         </div>
       </form>
       </div>

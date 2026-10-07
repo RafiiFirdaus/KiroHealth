@@ -5,7 +5,6 @@ import axios from 'axios';
 const Users = () => {
   const [users, setUsers] = useState([]);
 
-  // Fungsi memanggil API daftar pengguna
   const getUsers = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/admin/getAllUsers', {
@@ -31,18 +30,18 @@ const Users = () => {
         <div className="page-header">
           <div>
             <div className="page-eyebrow">Admin</div>
-            <h3 className="page-title">Kelola Pengguna</h3>
-            <p className="page-subtitle">Lihat daftar akun pasien, dokter, dan admin dalam tampilan tabel yang lebih bersih.</p>
+            <h3 className="page-title">Manage Users</h3>
+            <p className="page-subtitle">View patient, doctor, and admin accounts in a cleaner table layout.</p>
           </div>
         </div>
       <div className="card surface-card p-3">
         <table className="table table-hover">
           <thead>
             <tr>
-              <th>Nama</th>
+              <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Aksi</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -51,11 +50,10 @@ const Users = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                  {/* Menentukan label role berdasarkan data isdoctor dan type */}
-                  {user.isdoctor ? 'Dokter' : user.type === 'admin' ? 'Admin' : 'Pasien'}
+                  {user.isdoctor ? 'Doctor' : user.type === 'admin' ? 'Admin' : 'Patient'}
                 </td>
                 <td>
-                  <button className="btn btn-danger btn-sm">Blokir</button>
+                  <button className="btn btn-danger btn-sm">Block</button>
                 </td>
               </tr>
             ))}

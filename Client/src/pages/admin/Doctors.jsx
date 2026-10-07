@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import axios from 'axios';
+import { useNotification } from '../../components/NotificationProvider';
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
-  const [selectedDoc, setSelectedDoc] = useState(null); // State untuk menampung data detail dokter
+  const [selectedDoc, setSelectedDoc] = useState(null);
+  const { success, error: notifyError } = useNotification();
 
   const getDoctors = async () => {
     try {
@@ -27,13 +29,13 @@ const Doctors = () => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       if (res.data.success) {
-        alert(res.data.message);
+        success(res.data.message);
         getDoctors(); 
-        setSelectedDoc(null); // Tutup panel detail setelah update status
+        setSelectedDoc(null);
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan sistem');
+    } catch (err) {
+      console.log(err);
+      notifyError('A system error occurred');
     }
   };
 
@@ -47,43 +49,41 @@ const Doctors = () => {
         <div className="page-header">
           <div>
             <div className="page-eyebrow">Admin</div>
-            <h3 className="page-title">Kelola Dokter</h3>
-            <p className="page-subtitle">Tinjau pendaftaran dokter baru, lihat detail, dan ubah status persetujuan dengan cepat.</p>
+            <h3 className="page-title">Manage Doctors</h3>
+            <p className="page-subtitle">Review new doctor registrations, view details, and change approval status quickly.</p>
           </div>
         </div>
       
-      {/* --- PANEL DETAIL DOKTER MUNCUL DI SINI JIKA TOMBOL DETAIL DIKLIK --- */}
       {selectedDoc && (
         <div className="card surface-card mb-4 border-info">
           <div className="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Detail Pendaftar: Dr. {selectedDoc.fullname}</h5>
-            <button className="btn btn-sm btn-light" onClick={() => setSelectedDoc(null)}>Tutup</button>
+            <h5 className="mb-0">Applicant Details: Dr. {selectedDoc.fullname}</h5>
+            <button className="btn btn-sm btn-light" onClick={() => setSelectedDoc(null)}>Close</button>
           </div>
           <div className="card-body">
             <div className="row">
-              <div className="col-md-4 mb-2"><small className="text-muted">Email Profesional:</small><br/><b>{selectedDoc.email}</b></div>
-              <div className="col-md-4 mb-2"><small className="text-muted">No. Telepon / WhatsApp:</small><br/><b>{selectedDoc.phone}</b></div>
-              <div className="col-md-4 mb-2"><small className="text-muted">Spesialisasi:</small><br/><b>{selectedDoc.specialization}</b></div>
-              <div className="col-md-4 mb-2"><small className="text-muted">Pengalaman:</small><br/><b>{selectedDoc.experience} Tahun</b></div>
-              <div className="col-md-4 mb-2"><small className="text-muted">Biaya Konsultasi:</small><br/><b>Rp {selectedDoc.fees}</b></div>
-              <div className="col-md-4 mb-2"><small className="text-muted">Jam Praktik:</small><br/><b>{selectedDoc.timings[0]} - {selectedDoc.timings[1]}</b></div>
-              <div className="col-md-12"><small className="text-muted">Alamat Praktik:</small><br/><b>{selectedDoc.address}</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Professional Email:</small><br/><b>{selectedDoc.email}</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Phone / WhatsApp:</small><br/><b>{selectedDoc.phone}</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Specialization:</small><br/><b>{selectedDoc.specialization}</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Experience:</small><br/><b>{selectedDoc.experience} years</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Consultation Fee:</small><br/><b>Rp {selectedDoc.fees}</b></div>
+              <div className="col-md-4 mb-2"><small className="text-muted">Working Hours:</small><br/><b>{selectedDoc.timings[0]} - {selectedDoc.timings[1]}</b></div>
+              <div className="col-md-12"><small className="text-muted">Practice Address:</small><br/><b>{selectedDoc.address}</b></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* --- TABEL UTAMA --- */}
       <div className="card surface-card p-3">
         <div className="table-responsive">
           <table className="table table-hover" style={{ minWidth: '800px' }}>
             <thead>
               <tr>
-                <th>Nama Lengkap</th>
-                <th>Spesialisasi</th>
-                <th>Pengalaman</th>
+                <th>Full Name</th>
+                <th>Specialization</th>
+                <th>Experience</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -94,24 +94,22 @@ const Doctors = () => {
                   <td>{doctor.experience} Tahun</td>
                   <td>
                     <span className={`badge ${doctor.status === 'pending' ? 'bg-warning text-dark' : doctor.status === 'approved' ? 'bg-success' : 'bg-danger'}`}>
-                      {doctor.status}
+                      {doctor.status === 'pending' ? 'Pending' : doctor.status === 'approved' ? 'Approved' : 'Rejected'}
                     </span>
                   </td>
                   <td>
                     <div className="d-flex gap-2">
-                      {/* Tombol Detail Baru */}
-                      <button className="btn btn-info btn-sm text-white" onClick={() => setSelectedDoc(doctor)}>Detail</button>
-                      
-                      {/* Logika Tombol Persetujuan */}
+                      <button className="btn btn-info btn-sm text-white" onClick={() => setSelectedDoc(doctor)}>Details</button>
+
                       {doctor.status === 'pending' ? (
                         <>
-                          <button className="btn btn-success btn-sm" onClick={() => handleAccountStatus(doctor, 'approved')}>Setujui</button>
-                          <button className="btn btn-danger btn-sm" onClick={() => handleAccountStatus(doctor, 'rejected')}>Tolak</button>
+                          <button className="btn btn-success btn-sm" onClick={() => handleAccountStatus(doctor, 'approved')}>Approve</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleAccountStatus(doctor, 'rejected')}>Reject</button>
                         </>
                       ) : doctor.status === 'approved' ? (
-                        <button className="btn btn-danger btn-sm" onClick={() => handleAccountStatus(doctor, 'rejected')}>Cabut Izin</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleAccountStatus(doctor, 'rejected')}>Revoke</button>
                       ) : (
-                        <button className="btn btn-secondary btn-sm" disabled>Ditolak</button>
+                        <button className="btn btn-secondary btn-sm" disabled>Rejected</button>
                       )}
                     </div>
                   </td>

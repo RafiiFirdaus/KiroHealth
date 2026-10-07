@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     isdoctor: { type: Boolean, default: false },
     notification: { type: Array, default: [] }
 }, {
-    timestamps: true // Otomatis menambahkan createdAt dan updatedAt
+    timestamps: true // Automatically adds createdAt and updatedAt
 });
 
 const userModel = mongoose.model('Users', userSchema);

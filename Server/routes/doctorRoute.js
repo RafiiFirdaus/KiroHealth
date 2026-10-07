@@ -6,19 +6,19 @@ const { doctorAppointmentsController,
     updateStatusController } = require('../controllers/doctorController');
 const router = express.Router();
 
-// GET || Ambil Daftar Jadwal
+// GET || Fetch schedule list
 router.get('/doctor-appointments', authMiddleware, doctorAppointmentsController);
-// POST || Update Status (Terima/Tolak)
+// POST || Update status (Accept/Reject)
 router.post('/update-status', authMiddleware, updateStatusController);
 
-// ROUTE GET || Ambil Daftar Jadwal
+// ROUTE GET || Fetch schedule list
 router.get('/doctor-appointments', authMiddleware, doctorAppointmentsController);
-// ROUTE POST || Update Status (Terima/Tolak)
+// ROUTE POST || Update status (Accept/Reject)
 router.post('/update-status', authMiddleware, updateStatusController);
 
-// ROUTE POST || Ambil Info Profil Dokter
+// ROUTE POST || Fetch doctor profile info
 router.post('/getDoctorInfo', authMiddleware, getDoctorInfoController);
-// ROUTE POST || Update Profil Dokter
+// ROUTE POST || Update doctor profile
 router.post('/updateProfile', authMiddleware, updateProfileController);
 
 module.exports = router;

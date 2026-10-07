@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useNotification } from '../components/NotificationProvider';
 
 const BookAppointment = () => {
   const params = useParams(); 
@@ -9,8 +10,8 @@ const BookAppointment = () => {
   const [doctor, setDoctor] = useState(null);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const { success, error: notifyError } = useNotification();
   
-  // State baru untuk melacak ketersediaan
   const [isAvailable, setIsAvailable] = useState(false);
 
   const getDoctorData = async () => {
@@ -28,28 +29,26 @@ const BookAppointment = () => {
     }
   };
 
-  // Dapatkan tanggal hari ini dalam format YYYY-MM-DD
   const today = new Date().toISOString().split('T')[0];
 
-  // Fungsi mengecek ketersediaan ke backend
   const handleCheckAvailability = async () => {
     if (!date || !time) {
-      return alert("Harap lengkapi tanggal dan waktu terlebih dahulu");
+      notifyError('Please fill in the date and time first');
+      return;
     }
 
-    // 1. Validasi Tanggal (Mencegah input masa lalu jika diketik manual)
     if (date < today) {
-      return alert("Tanggal pemesanan tidak boleh berlalu (harus hari ini atau ke depannya).");
+      notifyError('The booking date cannot be in the past. Please choose today or a future date.');
+      return;
     }
 
-    // 2. Validasi Jam Praktik
     const startTime = doctor.timings[0];
     const endTime = doctor.timings[1];
     if (time < startTime || time > endTime) {
-      return alert(`Jam tidak valid! Silakan pilih waktu antara jam praktik dokter: ${startTime} - ${endTime}`);
+      notifyError(`Invalid time! Please choose a time within the doctor's working hours: ${startTime} - ${endTime}`);
+      return;
     }
 
-    // 3. Lanjut ke API cek ketersediaan jika validasi sukses
     try {
       const res = await axios.post(
         'http://localhost:5000/api/users/check-booking-availability',
@@ -58,14 +57,14 @@ const BookAppointment = () => {
       );
       if (res.data.success) {
         setIsAvailable(true);
-        alert(res.data.message);
+        success(res.data.message);
       } else {
         setIsAvailable(false);
-        alert(res.data.message);
+        notifyError(res.data.message);
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan saat mengecek jadwal');
+    } catch (err) {
+      console.log(err);
+      notifyError('An error occurred while checking availability');
     }
   };
 
@@ -78,12 +77,12 @@ const BookAppointment = () => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       if (res.data.success) {
-        alert(res.data.message);
-        navigate('/appointments'); // Lempar ke halaman riwayat agar pasien bisa melihat statusnya
+        success(res.data.message);
+        navigate('/appointments');
       }
-    } catch (error) {
-      console.log(error);
-      alert('Terjadi kesalahan saat memproses janji temu');
+    } catch (err) {
+      console.log(err);
+      notifyError('An error occurred while processing the appointment');
     }
   };
 
@@ -97,59 +96,57 @@ const BookAppointment = () => {
       <div className="page-stack">
         <div className="page-header">
           <div>
-            <div className="page-eyebrow">Janji Temu</div>
-            <h3 className="page-title">Buat Janji Temu</h3>
-            <p className="page-subtitle">Pilih tanggal dan waktu konsultasi yang sesuai dengan jadwal praktik dokter.</p>
+            <div className="page-eyebrow">Appointment</div>
+            <h3 className="page-title">Book an Appointment</h3>
+            <p className="page-subtitle">Choose a consultation date and time that fits the doctor's working schedule.</p>
           </div>
         </div>
       <div className="container px-0">
         {doctor ? (
           <div className="card surface-card p-4 mx-auto" style={{ maxWidth: '600px' }}>
             <h4 className="text-primary mb-3">Dr. {doctor.fullname}</h4>
-            <p><b>Spesialisasi:</b> {doctor.specialization}</p>
-            <p><b>Biaya Konsultasi:</b> Rp {doctor.fees}</p>
-            <p><b>Jam Praktik:</b> {doctor.timings[0]} - {doctor.timings[1]}</p>
+            <p><b>Specialization:</b> {doctor.specialization}</p>
+            <p><b>Consultation Fee:</b> Rp {doctor.fees}</p>
+            <p><b>Working Hours:</b> {doctor.timings[0]} - {doctor.timings[1]}</p>
             
             <hr />
             
             <form onSubmit={handleBooking}>
               <div className="mb-3">
-                <label className="fw-bold">Pilih Tanggal</label>
+                <label className="fw-bold">Choose Date</label>
                 <input 
                   type="date" 
                   className="form-control" 
                   value={date} 
-                  min={today} // <-- Tambahkan atribut min di sini
+                  min={today}
                   onChange={(e) => { setDate(e.target.value); setIsAvailable(false); }} 
                   required 
                 />
               </div>
               <div className="mb-3">
-                <label className="fw-bold">Pilih Waktu</label>
+                <label className="fw-bold">Choose Time</label>
                 <input 
                   type="time" 
                   className="form-control" 
                   value={time} 
-                  // Reset state isAvailable menjadi false jika waktu diubah
                   onChange={(e) => { setTime(e.target.value); setIsAvailable(false); }} 
                   required 
                 />
               </div>
 
-              {/* Tampilkan tombol berbeda berdasarkan status isAvailable */}
               {!isAvailable ? (
                 <button type="button" className="btn btn-secondary w-100 mt-2" onClick={handleCheckAvailability}>
-                  Cek Ketersediaan
+                  Check Availability
                 </button>
               ) : (
                 <button type="submit" className="btn btn-primary w-100 mt-2">
-                  Kirim Permintaan
+                  Submit Request
                 </button>
               )}
             </form>
           </div>
         ) : (
-          <p>Memuat data dokter...</p>
+          <p>Loading doctor data...</p>
         )}
       </div>
       </div>

@@ -27,8 +27,15 @@ const Users = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Kelola Pengguna</h3>
-      <div className="card shadow-sm p-3">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Admin</div>
+            <h3 className="page-title">Kelola Pengguna</h3>
+            <p className="page-subtitle">Lihat daftar akun pasien, dokter, dan admin dalam tampilan tabel yang lebih bersih.</p>
+          </div>
+        </div>
+      <div className="card surface-card p-3">
         <table className="table table-hover">
           <thead>
             <tr>
@@ -54,6 +61,7 @@ const Users = () => {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </Layout>
   );

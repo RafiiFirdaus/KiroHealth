@@ -26,8 +26,15 @@ const Appointments = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Riwayat Janji Temu</h3>
-      <div className="card shadow-sm p-3">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Riwayat</div>
+            <h3 className="page-title">Riwayat Janji Temu</h3>
+            <p className="page-subtitle">Pantau semua permintaan konsultasi, status persetujuan, dan jadwal yang sudah Anda buat.</p>
+          </div>
+        </div>
+        <div className="card surface-card p-3">
         {/* Tambahkan div table-responsive di sini */}
         <div className="table-responsive">
           <table className="table table-hover" style={{ minWidth: '800px' }}>
@@ -55,6 +62,7 @@ const Appointments = () => {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
     </Layout>

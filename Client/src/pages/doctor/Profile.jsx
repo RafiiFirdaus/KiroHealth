@@ -79,9 +79,16 @@ const Profile = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Kelola Profil Dokter</h3>
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Dokter</div>
+            <h3 className="page-title">Kelola Profil Dokter</h3>
+            <p className="page-subtitle">Perbarui identitas praktik, jam kerja, dan tarif konsultasi Anda dengan cepat.</p>
+          </div>
+        </div>
       {formData && (
-        <form onSubmit={handleUpdate} className="bg-white p-4 shadow-sm rounded">
+        <form onSubmit={handleUpdate} className="card surface-card p-4">
           <div className="row">
             <div className="col-md-4 mb-3">
               <label>Nama Lengkap</label>
@@ -125,6 +132,7 @@ const Profile = () => {
           </div>
         </form>
       )}
+      </div>
     </Layout>
   );
 };

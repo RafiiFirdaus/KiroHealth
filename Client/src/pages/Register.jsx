@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import brandLogo from '../assets/kirohealth_logo.png';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
@@ -29,9 +30,18 @@ const Register = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card p-4 shadow" style={{ width: '400px' }}>
-        <h3 className="text-center mb-4">Daftar KiroHealth</h3>
+    <div className="auth-page">
+      <div className="auth-simple card surface-card">
+        <div className="auth-simple-logo-wrap">
+          <img src={brandLogo} alt="KiroHealth" className="auth-simple-logo" />
+        </div>
+
+        <div className="auth-simple-header">
+          <p className="page-eyebrow mb-1">Buat akun</p>
+          <h2>Daftar KiroHealth</h2>
+          <p>Buat akun baru untuk mulai menggunakan layanan KiroHealth.</p>
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label>Nama Lengkap</label>
@@ -50,11 +60,11 @@ const Register = () => {
             <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="form-control" placeholder="Masukkan no hp" required />
           </div>
           <button className="btn btn-primary w-100 mb-3" type="submit">Daftar</button>
-          <div className="text-center">
+          <div className="text-center text-muted">
             Sudah punya akun? <Link to="/login">Login di sini</Link>
           </div>
         </form>
-      </div>
+        </div>
     </div>
   );
 };

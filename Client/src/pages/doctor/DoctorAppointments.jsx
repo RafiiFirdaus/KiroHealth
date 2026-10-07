@@ -41,15 +41,23 @@ const DoctorAppointments = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Jadwal Pasien Saya</h3>
-      <div className="card shadow-sm p-3">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Dokter</div>
+            <h3 className="page-title">Jadwal Pasien Saya</h3>
+            <p className="page-subtitle">Tinjau antrean konsultasi pasien dan tanggapi permintaan yang masih menunggu persetujuan.</p>
+          </div>
+        </div>
+      <div className="card surface-card p-3">
         {/* Tambahkan div pembungkus table-responsive di sini */}
         <div className="table-responsive">
-          <table className="table table-hover" style={{ minWidth: '800px' }}>
+          <table className="table table-hover" style={{ minWidth: '900px' }}>
             <thead>
               <tr>
                 <th>ID Pemesanan</th>
                 <th>Nama Pasien</th>
+                <th>No. HP Pasien</th> 
                 <th>Tanggal & Waktu</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -58,9 +66,12 @@ const DoctorAppointments = () => {
             <tbody>
               {appointments.map((appt, index) => (
                 <tr key={index}>
-                  {/* Hapus pemotongan substring, tampilkan ID secara utuh */}
-                  <td>{appt._id}</td> 
-                  <td>{appt.userInfo?.name || 'Data Pasien Hilang'}</td> 
+                  <td>{appt._id}</td>
+                  <td>{appt.userInfo?.name || 'Data Hilang'}</td>
+                  
+                  {/* <-- Menampilkan No. HP Pasien --> */}
+                  <td>{appt.userInfo?.phone || <span className="text-muted fst-italic">Belum diisi</span>}</td> 
+                  
                   <td>{appt.date} | {appt.time}</td>
                   <td>
                     <span className={`badge ${appt.status === 'pending' ? 'bg-warning text-dark' : appt.status === 'approved' ? 'bg-success' : 'bg-danger'}`}>
@@ -80,6 +91,7 @@ const DoctorAppointments = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </Layout>
   );

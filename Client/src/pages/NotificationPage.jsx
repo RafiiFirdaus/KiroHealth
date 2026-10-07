@@ -37,8 +37,15 @@ const NotificationPage = () => {
 
   return (
     <Layout>
-      <h3 className="p-3 text-center">Halaman Notifikasi</h3>
-      <div className="card p-4 shadow-sm">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Aktivitas</div>
+            <h3 className="page-title">Halaman Notifikasi</h3>
+            <p className="page-subtitle">Cek pembaruan terbaru terkait janji temu, persetujuan dokter, dan aktivitas akun Anda.</p>
+          </div>
+        </div>
+      <div className="card surface-card p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5>Notifikasi Belum Dibaca</h5>
           <h6 style={{ cursor: 'pointer', color: 'blue' }} onClick={handleMarkAllRead}>
@@ -60,6 +67,7 @@ const NotificationPage = () => {
         ) : (
           <p className="text-center text-muted">Tidak ada notifikasi baru.</p>
         )}
+      </div>
       </div>
     </Layout>
   );

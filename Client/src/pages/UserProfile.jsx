@@ -11,7 +11,8 @@ const UserProfile = () => {
   // State untuk form
   const [formData, setFormData] = useState({
     name: '',
-    email: ''
+    email: '',
+    phone: ''
   });
 
   // Isi form secara otomatis saat data user dari Redux sudah siap
@@ -19,7 +20,8 @@ const UserProfile = () => {
     if (user) {
       setFormData({
         name: user.name,
-        email: user.email
+        email: user.email,
+        phone: user.phone || ''
       });
     }
   }, [user]);
@@ -53,8 +55,15 @@ const UserProfile = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Profil Saya</h3>
-      <div className="card shadow-sm p-4 mx-auto" style={{ maxWidth: '500px' }}>
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Akun</div>
+            <h3 className="page-title">Profil Saya</h3>
+            <p className="page-subtitle">Perbarui identitas akun Anda agar informasi di seluruh aplikasi tetap konsisten.</p>
+          </div>
+        </div>
+      <div className="card surface-card p-4 mx-auto" style={{ maxWidth: '500px' }}>
         <div className="text-center mb-4">
           <div 
             className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
@@ -78,18 +87,21 @@ const UserProfile = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="fw-bold">Alamat Email</label>
+            <label className="fw-bold">No. Telepon / WhatsApp</label>
             <input 
-              type="email" 
-              name="email" 
-              value={formData.email} 
+              type="text" 
+              name="phone" 
+              value={formData.phone} 
               onChange={handleChange} 
               className="form-control" 
+              placeholder="Contoh: 08123456789"
               required 
             />
           </div>
+
           <button type="submit" className="btn btn-primary w-100">Simpan Perubahan</button>
         </form>
+      </div>
       </div>
     </Layout>
   );

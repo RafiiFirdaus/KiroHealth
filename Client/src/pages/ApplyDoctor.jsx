@@ -59,8 +59,15 @@ const ApplyDoctor = () => {
 
   return (
     <Layout>
-      <h2 className="mb-4">Formulir Pengajuan Dokter</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-4 shadow-sm rounded">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Pendaftaran Dokter</div>
+            <h3 className="page-title">Formulir Pengajuan Dokter</h3>
+            <p className="page-subtitle">Isi data diri dan informasi praktik untuk mengajukan verifikasi sebagai dokter di KiroHealth.</p>
+          </div>
+        </div>
+      <form onSubmit={handleSubmit} className="card surface-card p-4">
         <h5 className="mb-3 text-primary">Data Pribadi & Profesional</h5>
         <div className="row">
           <div className="col-md-4 mb-3">
@@ -104,6 +111,7 @@ const ApplyDoctor = () => {
           <button type="submit" className="btn btn-primary px-4">Kirim Pengajuan</button>
         </div>
       </form>
+      </div>
     </Layout>
   );
 };

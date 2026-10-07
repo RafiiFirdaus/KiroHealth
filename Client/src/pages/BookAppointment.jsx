@@ -94,10 +94,17 @@ const BookAppointment = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Buat Janji Temu</h3>
-      <div className="container">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Janji Temu</div>
+            <h3 className="page-title">Buat Janji Temu</h3>
+            <p className="page-subtitle">Pilih tanggal dan waktu konsultasi yang sesuai dengan jadwal praktik dokter.</p>
+          </div>
+        </div>
+      <div className="container px-0">
         {doctor ? (
-          <div className="card shadow-sm p-4 mx-auto" style={{ maxWidth: '600px' }}>
+          <div className="card surface-card p-4 mx-auto" style={{ maxWidth: '600px' }}>
             <h4 className="text-primary mb-3">Dr. {doctor.fullname}</h4>
             <p><b>Spesialisasi:</b> {doctor.specialization}</p>
             <p><b>Biaya Konsultasi:</b> Rp {doctor.fees}</p>
@@ -144,6 +151,7 @@ const BookAppointment = () => {
         ) : (
           <p>Memuat data dokter...</p>
         )}
+      </div>
       </div>
     </Layout>
   );

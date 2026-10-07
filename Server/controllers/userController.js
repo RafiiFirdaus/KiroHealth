@@ -220,7 +220,7 @@ const updateUserProfileController = async (req, res) => {
         // Menggunakan findByIdAndUpdate untuk memperbarui data
         const updatedUser = await userModel.findByIdAndUpdate(
             req.body.userId,
-            { name: req.body.name, email: req.body.email },
+            { name: req.body.name, email: req.body.email, phone: req.body.phone },
             { new: true }
         );
         

@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHome, FaList, FaUserMd, FaUser } from 'react-icons/fa';
 import { IoMdNotifications } from 'react-icons/io';
 import { BiLogOut } from 'react-icons/bi';
+import brandLogo from '../assets/kirohealth_logo.png';
 import '../Layout.css';
 
 const Layout = ({ children }) => {
@@ -51,8 +52,11 @@ const Layout = ({ children }) => {
     <div className="main">
       <div className="sidebar">
         <div className="logo">
-          <h3>KiroHealth</h3>
-          <hr className="text-light" />
+          <img src={brandLogo} alt="KiroHealth" />
+          <div>
+            <h3>KiroHealth</h3>
+            <p>Modern health dashboard</p>
+          </div>
         </div>
         <div className="menu">
           {/* Loop array SidebarMenu, bukan lagi userMenu */}
@@ -79,7 +83,7 @@ const Layout = ({ children }) => {
       
       <div className="content">
         <div className="header">
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center gap-3">
             <div className="badge-container" style={{ cursor: 'pointer' }} onClick={() => navigate('/notification')}>
               <IoMdNotifications size={25} />
               {user?.notification?.length > 0 && (
@@ -90,7 +94,7 @@ const Layout = ({ children }) => {
             </div>
             <Link 
               to={user?.isdoctor ? `/doctor/profile/${user._id}` : "/profile"} 
-              className="text-dark fw-bold ms-3 text-decoration-none"
+              className="fw-bold text-decoration-none"
             >
               {user ? user.name : 'Memuat...'}
             </Link>

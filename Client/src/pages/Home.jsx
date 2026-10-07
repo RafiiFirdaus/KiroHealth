@@ -31,10 +31,18 @@ const Home = () => {
   if (user && user.type === 'admin') {
     return (
       <Layout>
-        <h3 className="mb-4">Dasbor Administrator</h3>
-        <div className="alert alert-info shadow-sm">
-          <h4 className="alert-heading">Selamat datang, Admin!</h4>
-          <p>Anda berada di pusat kendali aplikasi KiroHealth. Silakan gunakan menu di sebelah kiri untuk memvalidasi pendaftaran dokter baru atau mengelola pengguna yang ada.</p>
+        <div className="page-stack">
+          <div className="page-header">
+            <div>
+              <div className="page-eyebrow">Dasbor Admin</div>
+              <h3 className="page-title">Dasbor Administrator</h3>
+              <p className="page-subtitle">Pusat kendali KiroHealth untuk memantau pendaftaran dokter, pengguna, dan aktivitas layanan.</p>
+            </div>
+          </div>
+          <div className="alert alert-info">
+            <h4 className="alert-heading">Selamat datang, Admin!</h4>
+            <p>Anda berada di pusat kendali aplikasi KiroHealth. Silakan gunakan menu di sebelah kiri untuk memvalidasi pendaftaran dokter baru atau mengelola pengguna yang ada.</p>
+          </div>
         </div>
       </Layout>
     );
@@ -43,10 +51,18 @@ const Home = () => {
   if (user && user.isdoctor) {
     return (
       <Layout>
-        <h3 className="mb-4">Dasbor Dokter</h3>
-        <div className="alert alert-success shadow-sm">
-          <h4 className="alert-heading">Selamat datang, Dr. {user.name}!</h4>
-          <p>Silakan gunakan menu "Jadwal Pasien" untuk melihat dan merespons permintaan janji temu, atau menu "Profil" untuk memperbarui data praktik Anda.</p>
+        <div className="page-stack">
+          <div className="page-header">
+            <div>
+              <div className="page-eyebrow">Dasbor Dokter</div>
+              <h3 className="page-title">Dasbor Dokter</h3>
+              <p className="page-subtitle">Kelola jadwal pasien, respons janji temu, dan data praktik dalam satu ruang kerja yang lebih tenang.</p>
+            </div>
+          </div>
+          <div className="alert alert-success">
+            <h4 className="alert-heading">Selamat datang, Dr. {user.name}!</h4>
+            <p>Silakan gunakan menu "Jadwal Pasien" untuk melihat dan merespons permintaan janji temu, atau menu "Profil" untuk memperbarui data praktik Anda.</p>
+          </div>
         </div>
       </Layout>
     );
@@ -54,13 +70,20 @@ const Home = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Daftar Dokter Tersedia</h3>
-      <div className="row">
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Temukan Dokter</div>
+            <h3 className="page-title">Daftar Dokter Tersedia</h3>
+            <p className="page-subtitle">Pilih dokter yang sesuai kebutuhan Anda dan lanjutkan ke jadwal konsultasi yang tersedia.</p>
+          </div>
+        </div>
+        <div className="row g-4">
         {doctors && doctors
           .filter(doctor => doctor.userId !== user?._id) // Filter akun sendiri
           .map((doctor, index) => (
           <div className="col-md-4 mb-4" key={index}>
-            <div className="card shadow-sm h-100">
+            <div className="card surface-card h-100">
               <div className="card-header bg-primary text-white">
                 <h5 className="mb-0">{doctor.fullname}</h5>
               </div>
@@ -80,6 +103,7 @@ const Home = () => {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </Layout>
   );

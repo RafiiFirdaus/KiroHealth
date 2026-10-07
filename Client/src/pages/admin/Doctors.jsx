@@ -43,11 +43,18 @@ const Doctors = () => {
 
   return (
     <Layout>
-      <h3 className="mb-4">Kelola Dokter</h3>
+      <div className="page-stack">
+        <div className="page-header">
+          <div>
+            <div className="page-eyebrow">Admin</div>
+            <h3 className="page-title">Kelola Dokter</h3>
+            <p className="page-subtitle">Tinjau pendaftaran dokter baru, lihat detail, dan ubah status persetujuan dengan cepat.</p>
+          </div>
+        </div>
       
       {/* --- PANEL DETAIL DOKTER MUNCUL DI SINI JIKA TOMBOL DETAIL DIKLIK --- */}
       {selectedDoc && (
-        <div className="card shadow-sm mb-4 border-info">
+        <div className="card surface-card mb-4 border-info">
           <div className="card-header bg-info text-white d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Detail Pendaftar: Dr. {selectedDoc.fullname}</h5>
             <button className="btn btn-sm btn-light" onClick={() => setSelectedDoc(null)}>Tutup</button>
@@ -67,7 +74,7 @@ const Doctors = () => {
       )}
 
       {/* --- TABEL UTAMA --- */}
-      <div className="card shadow-sm p-3">
+      <div className="card surface-card p-3">
         <div className="table-responsive">
           <table className="table table-hover" style={{ minWidth: '800px' }}>
             <thead>
@@ -113,6 +120,7 @@ const Doctors = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </Layout>
   );
